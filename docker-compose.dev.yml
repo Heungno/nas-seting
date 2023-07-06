@@ -1,0 +1,127 @@
+version: "3"
+
+networks:
+  external-network:
+    external: true
+  internal-network:
+    external: true
+
+services:
+  nginx-proxy-manager:
+    image: "jc21/nginx-proxy-manager:latest"
+    container_name: nginx-proxy-manager
+    hostname: "nginx-proxy-manager"
+    networks:
+      external-network:
+        ipv4_address: 172.20.200.100
+      internal-network:
+        ipv4_address: 172.20.100.100
+    ports:
+      - 80:80
+      - 81:81
+      - 443:443
+    volumes:
+      - /share/DEV/docker-application/nginx-proxy-manager/data:/data
+      - /share/DEV/docker-application/nginx-proxy-manager/letsencrypt:/etc/letsencrypt
+    restart: unless-stopped
+
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    hostname: portainer
+    networks:
+      internal-network:
+        ipv4_address: 172.20.100.101
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Seoul
+    ports:
+      - 9000:9000
+      - 9443:9443
+    volumes:
+      - /share/DEV/docker-application/portainer:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+
+  watchtower:
+    image: containrrr/watchtower
+    container_name: watchtower
+    networks:
+      internal-network:
+        ipv4_address: 172.20.100.102
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      TZ: Asia/Seoul
+      WATCHTOWER_POLL_INTERVAL: 86400
+    restart: unless-stopped
+
+  chromium:
+    image: lscr.io/linuxserver/chromium
+    container_name: chromium
+    hostname: "chromium"
+    #network_mode: bridge
+    networks:
+      external-network:
+        ipv4_address: 172.20.200.101
+    ports:
+      - 3000:3000
+      - 3001:3001
+    security_opt:
+      - seccomp:unconfined #optional
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Seoul
+      - LANG=ko_KR.UTF-8
+      - LANGUAGE=ko_KR.UTF-8
+      - CUSTOM_USER=heungno
+      - PASSWORD=password
+    volumes:
+      - /share/DEV/chromium/config:/config
+      - /share/DEV/fonts/NanumFont:/usr/share/fonts/NanumFont #폰트
+      - /share/DEV/fonts/D2Coding:/usr/share/fonts/D2Coding #폰트
+    shm_size: "1gb"
+    restart: unless-stopped
+
+  code-server:
+    image: lscr.io/linuxserver/code-server
+    container_name: code-server
+    hostname: "code-server"
+    #network_mode: bridge
+    networks:
+      external-network:
+        ipv4_address: 172.20.200.102
+    ports:
+      - 8443:8443
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Seoul
+      - LANG=ko_KR.UTF-8
+      - PASSWORD=password #optional
+      - SUDO_PASSWORD=password #optional
+      - DEFAULT_WORKSPACE=/config/workspace #optional
+    volumes:
+      - /share/DEV/vscode/config:/config
+      - /share/workspace/code-server:/config/workspace
+      - /share/DEV/fonts/NanumFont:/usr/share/fonts/NanumFont #폰트
+    restart: unless-stopped
+
+  dashy:
+    image: lissy93/dashy:latest
+    container_name: dashy
+    hostname: dashy
+    networks:
+      internal-network:
+        ipv4_address: 172.20.100.103
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Seoul
+    ports:
+      - 4000:80
+    volumes:
+      - ./dashy.conf.yml:/app/public/conf.yml
+    restart: unless-stopped

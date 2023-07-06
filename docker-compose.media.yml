@@ -1,0 +1,169 @@
+version: "3"
+
+networks:
+  external-network:
+    external: true
+  internal-network:
+    external: true
+
+services:
+  proxy:
+    container_name: nginx
+    hostname: nginx
+    image: nginx:latest
+    networks:
+      external-network:
+        ipv4_address: 172.20.200.200
+      internal-network:
+        ipv4_address: 172.20.100.200
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Seoul
+      - LANG=ko_KR.UTF-8
+      - LANGUAGE=ko_KR.UTF-8
+    volumes:
+      - /share/DEV/docker-application/media-server/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - /share/DEV/docker-application/media-server/nginx/content/:/var/www/
+      - /share/DEV/docker-application/media-server/nginx/logs/:/var/log/nginx/
+    ports:
+      - 82:80
+    restart: unless-stopped
+
+  transmission:
+    image: lscr.io/linuxserver/transmission:latest
+    container_name: transmission
+    hostname: transmission
+    networks:
+      internal-network:
+        ipv4_address: 172.20.100.201
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Seoul
+      - LANG=ko_KR.UTF-8
+      - LANGUAGE=ko_KR.UTF-8
+      - USER=heungno #optional
+      - PASS=password #optional
+    #  - TRANSMISSION_WEB_HOME=
+    #  - WHITELIST= #optional
+    #  - PEERPORT= #optional
+    #  - HOST_WHITELIST= #optional
+    volumes:
+      - /share/DEV/docker-application/media-server/transmission:/config
+      - /share/media/temp/downloads:/downloads
+      - /share/media/temp/watch:/watch
+    expose:
+      - 9091:9091
+      - 51413:51413
+      - 51413:51413/udp
+    restart: unless-stopped
+
+  bazarr:
+    image: lscr.io/linuxserver/bazarr:latest
+    container_name: bazarr
+    hostname: bazarr
+    networks:
+      internal-network:
+        ipv4_address: 172.20.100.202
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Seoul
+      - LANG=ko_KR.UTF-8
+      - LANGUAGE=ko_KR.UTF-8
+    volumes:
+      - /share/DEV/docker-application/media-server/bazarr:/config
+      - /share/media/movies:/movies #optional
+      - /share/media/tvseries:/tv #optional
+      - /share/media/temp/downloads:/downloads #optional
+    expose:
+      - 6767:6767
+    restart: unless-stopped
+
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    hostname: radarr
+    networks:
+      internal-network:
+        ipv4_address: 172.20.100.203
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Seoul
+      - LANG=ko_KR.UTF-8
+      - LANGUAGE=ko_KR.UTF-8
+    volumes:
+      - /share/DEV/docker-application/media-server/radarr:/config
+      - /share/media/movies:/movies #optional
+      - /share/media/temp/downloads:/downloads #optional
+    expose:
+      - 7878:7878
+    restart: unless-stopped
+
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    hostname: sonarr
+    networks:
+      internal-network:
+        ipv4_address: 172.20.100.204
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Seoul
+      - LANG=ko_KR.UTF-8
+      - LANGUAGE=ko_KR.UTF-8
+    volumes:
+      - /share/DEV/docker-application/media-server/sonarr:/config
+      - /share/media/tvseries:/tv #optional
+      - /share/media/temp/downloads:/downloads #optional
+    expose:
+      - 8989:8989
+    restart: unless-stopped
+
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
+    hostname: prowlarr
+    networks:
+      internal-network:
+        ipv4_address: 172.20.100.205
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Seoul
+      - LANG=ko_KR.UTF-8
+      - LANGUAGE=ko_KR.UTF-8
+    volumes:
+      - /share/DEV/docker-application/media-server/prowlarr:/config
+    expose:
+      - 9696:9696
+    restart: unless-stopped
+
+  jellyfin:
+    image: lscr.io/linuxserver/jellyfin:latest
+    container_name: jellyfin
+    hostname: jellyfin
+    networks:
+      internal-network:
+        ipv4_address: 172.20.100.206
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Seoul
+      - LANG=ko_KR.UTF-8
+      - LANGUAGE=ko_KR.UTF-8
+      #- JELLYFIN_PublishedServerUrl=192.168.219.102 #tv
+    volumes:
+      - /share/DEV/docker-application/media-server/jellyfin:/config
+      - /share/media/tvseries:/data/tvshows
+      - /share/media/movies:/data/movies
+    expose:
+      - 8096:8096
+    ports:
+      - 8920:8920 #optional
+      - 7359:7359/udp #optional
+      - 1900:1900/udp #optional
+    restart: unless-stopped

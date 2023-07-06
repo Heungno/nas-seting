@@ -1,0 +1,49 @@
+pageInfo:
+  title: 흥노천재
+sections: # An array of sections
+  - name: 미디어
+    icon: 🎞️
+    items:
+      - title: Sonarr
+        icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons@master/png/sonarr.png
+        url: https://tv.domain.com/show
+      - title: Radarr
+        icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons@master/png/radarr.png
+        url: https://tv.domain.com/movie
+      - title: Bazarr
+        icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons@master/png/bazarr.png
+        url: https://tv.domain.com/cc
+      - title: Prowlarr
+        description: 인덱서 관리
+        icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons@master/png/prowlarr.png
+        url: https://tv.domain.com/cc
+      - title: Jellyfin
+        icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons@master/png/jellyfin.png
+        url: https://tv.domain.com
+  - name: 개발
+    icon: 🤖
+    items:
+      - title: CODE
+        icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons@master/png/code.png
+        url: https://code.domain.com
+      - title: chromium
+        icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons@master/png/chromium.png
+        url: https://chrome.domain.com
+  - name: 홈 네트워크
+    icon: 🎚️
+    items:
+      - title: Proxy
+        icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons@master/png/nginx-proxy-manager.png
+        url: https://proxy.domain.com
+      - title: portainer
+        icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons@master/png/portainer.png
+        url: https://docker.domain.com
+      - title: Transmission
+        icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons@master/png/transmission.png
+        url: https://tv.domain.com/transmission
+      - title: 공유기
+        icon: 🌏
+        url: http://192.168.0.1
+      - title: NAS
+        icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons@master/png/qnap-alt.png
+        url: https://nas.domain.com
