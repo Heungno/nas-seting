@@ -43,7 +43,7 @@ services:
       - TZ=Asia/Seoul
       - LANG=ko_KR.UTF-8
       - LANGUAGE=ko_KR.UTF-8
-      - USER=heungno #optional
+      - USER=userid #optional
       - PASS=password #optional
     #  - TRANSMISSION_WEB_HOME=
     #  - WHITELIST= #optional
